@@ -1,0 +1,13 @@
+PROJECT(${TEXT_TO_SPEECH_LIB_NAME})
+#FIND_PACKAGE (Qt5 COMPONENTS TextToSpeech REQUIRED)
+add_subdirectory(hello_speak)
+
+file(GLOB SPEECH_TO_TEXT_SOURCES
+    *.hpp
+    private/*.cpp
+    private/*.hpp)
+
+add_library(${TEXT_TO_SPEECH_LIB_NAME} ${LIBRARY_TYPE} ${SPEECH_TO_TEXT_SOURCES})
+
+set_target_properties(${TEXT_TO_SPEECH_LIB_NAME}  PROPERTIES AUTOMOC TRUE)
+TARGET_LINK_LIBRARIES(${TEXT_TO_SPEECH_LIB_NAME} ${Qt5Core_LIBRARIES} ${Qt5TextToSpeech_LIBRARIES})

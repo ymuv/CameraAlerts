@@ -1,0 +1,33 @@
+1. QtSpeech
+2. Add speech moduele, parse commands
+3. Add BD
+4. Write frontend
+
+<Alert
+    name="Alert1"
+    <FinalVideo ....>
+    <SMTP ...>
+</Alert>
+
+<camera
+    AlertName="Alert1"
+    ...
+/>
+
+
+
+ CINputConfig{
+std::vector<input>
+std::vector<net>
+}
+
+
+
+
+
+2. increase rect height to 15 ?
+3. UDP wait timeout??
+4. SaveFinalVideoPath - to array and move to thread
+5. MatwithTimestamp -> add class serializedImpl, whith double lock mutex. Add MatwithTimestamp lock, unlock methods.
+
+6. RunExternalCommandsOnAlert add formatting

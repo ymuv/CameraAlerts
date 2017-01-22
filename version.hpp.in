@@ -1,0 +1,11 @@
+#pragma once
+namespace
+{
+
+const char* PROJECT_BUILD_VERSION = "GIT version: ${PROJECT_GIT_REVISION}";
+
+const char* PROJECT_BUILD_TIME="Build time: ${PROJECT_BUILD_DATETIME}";
+
+const char* PROJECT_LAST_COMMIT_DATETIME="Last Commit: ${PROJECT_LAST_COMMIT_DATETIME}";
+}
+

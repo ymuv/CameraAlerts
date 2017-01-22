@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+#QtCreator files
+CMakeLists.txt.user
+config.xml
+
+BUILD/

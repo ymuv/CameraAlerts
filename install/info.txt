@@ -1,0 +1,2 @@
+Sounds are from kde (ogg converted to mp3).
+KDE-Sys-App-Error-Serious.ogg -> crash.mp3

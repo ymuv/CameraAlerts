@@ -1,0 +1,64 @@
+openssl speed md5 sha1 sha256 sha512 rmd160 aes des blowfish  aes  md4 hmac seed-cbc rc2
+md4              69859.25k   241414.93k   620184.23k  1005664.94k  1191881.39k
+
+md5              57648.86k   174695.30k   417340.84k   624520.82k   728530.94k
+sha256           69811.34k   155707.97k   278011.82k   340016.47k   362217.47k
+sha512           46167.40k   181321.51k   280250.88k   407224.59k   463208.45k
+hmac(md5)        48941.33k   158552.13k   391315.71k   616196.10k   740627.80k
+sha1             64689.01k   194051.14k   452077.59k   670510.42k   802149.72k
+rmd160           39355.23k   101722.58k   196054.87k   254942.78k   276974.25k
+des cbc          76805.35k    78418.35k    79916.29k    80321.88k    79432.36k
+des ede3         30147.79k    30390.93k    30582.75k    30618.97k    30236.67k
+seed cbc         88899.48k    89096.92k    88428.97k    89347.75k    88367.10k
+rc2 cbc          51322.34k    52357.31k    53166.76k    52846.25k    53149.70k
+blowfish cbc    134225.58k   142199.40k   143001.60k   143426.90k   145954.13k
+
+aes-128 cbc     135366.94k   150151.10k   153545.90k   154400.77k   153395.20k
+aes-192 cbc     116394.49k   125968.58k   128070.49k   130549.38k   130839.89k
+aes-256 cbc     102418.01k   108429.23k   110312.02k   111011.16k   111539.54k
+
+
+
+
+
+
+Available values:
+md4      md5      hmac     sha1     sha256   sha512   whirlpoolrmd160
+seed-cbc rc2-cbc  bf-cbc
+des-cbc  des-ede3 aes-128-cbc aes-192-cbc aes-256-cbc aes-128-ige aes-192-ige aes-256-ige
+camellia-128-cbc camellia-192-cbc camellia-256-cbc rc4
+rsa512   rsa1024  rsa2048  rsa4096
+dsa512   dsa1024  dsa2048
+ecdsap160 ecdsap192 ecdsap224 ecdsap256 ecdsap384 ecdsap521
+ecdsak163 ecdsak233 ecdsak283 ecdsak409 ecdsak571
+ecdsab163 ecdsab233 ecdsab283 ecdsab409 ecdsab571
+ecdsa
+ecdhp160  ecdhp192  ecdhp224 ecdhp256  ecdhp384  ecdhp521
+ecdhk163  ecdhk233  ecdhk283  ecdhk409  ecdhk571
+ecdhb163  ecdhb233  ecdhb283  ecdhb409  ecdhb571
+ecdh
+seed     rc2      des      aes      camellia rsa      blowfish
+
+
+
+OpenSSL 1.0.2g-fips  1 Mar 2016
+built on: reproducible build, date unspecified
+options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) blowfish(idx)
+compiler: cc -I. -I.. -I../include  -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DMD32_REG_T=int -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes
+rmd160           40885.62k   101964.74k   194827.61k   252471.30k   273765.72k
+sha512           46111.08k   182196.69k   281455.53k   397504.51k   456075.95k
+md5              55904.13k   176811.35k   414155.78k   630705.15k   738121.05k
+sha1             63945.32k   191204.05k   435112.19k   660521.30k   806608.90k
+sha256           70584.47k   158611.99k   278110.81k   340544.85k   366040.41k
+
+
+
+des cbc          77436.74k    80422.83k    81337.43k    81564.33k    81283.75k
+des ede3         30217.85k    30409.75k    30363.56k    30602.58k    30318.59k
+blowfish cbc    134273.03k   141589.80k   142409.64k   143576.06k   144171.01k
+aes-128 cbc     139135.14k   151275.78k   154452.14k   156157.95k   157275.48k
+aes-192 cbc     117668.12k   125927.55k   129092.44k   129786.54k   128936.62k
+aes-256 cbc     102500.65k   108108.84k   110406.83k   110955.86k   111528.62k
+

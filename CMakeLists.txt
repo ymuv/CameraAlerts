@@ -1,0 +1,270 @@
+PROJECT(AlertSystem)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
+
+#release build on windows with Qt creator
+#CMAKE_BUILD_TYPE:STRING=RELEASE
+#CMAKE_CONFIGURATION_TYPES:STRING=Release
+#CMAKE_CXX_COMPILER:STRING=%{Compiler:Executable}
+#CMAKE_PREFIX_PATH:STRING=C:\opencv\build\x86\vc12\lib\
+#LINK_FLAGS:STRING=RELEASE
+#QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}  --config Release --target ALL_BUILD
+
+SET (BUILD_CLIENT ON)
+
+SET (BUILD_SERIAL ON)
+SET (BUILD_TELEGRAM ON)
+SET (BUILD_XMPP ON)
+SET (BUILD_TEXT_TO_SPEACH ON)
+SET (BUILD_WITH_QT_SOUND ON)
+SET (USE_PROFILER OFF)
+SET (BUILD_MJPEG ON)
+SET (BUILD_MAIN ON)
+SET (BUILD_GUI ON)
+SET (BUILD_MOTION_ALGO ON)
+SET (BUILD_TEST_MAIN ON)
+SET (BUILD_NET_SERVERS ON)
+SET (GDB_FLAG ON)
+SET (INSTALL_HEADERS ON)
+SET (LINUX ON)
+SET (INSTALL_CONFIG ON)
+SET (BUILD_ZLIB ON)
+SET (BUILD_SMTP ON)
+SET (BUILD_DB ON)
+SET (BUILD_TOOLS ON)
+
+SET (TEST_PROJECT_EXE_NAME "TestExe")
+SET (ALGO_TEST_PROJECT_EXE_NAME "AlgoTest")
+SET (MAIN_NAME "CameraAlerts")
+SET (VIDEO_INPUT_LIB_NAME "VideoInput")
+SET (GUI_MAIN "GuiMain")
+SET (MOTION_ALGO_LIB_NAME "MotionAlgorithms")
+SET (ALGO_RND_LIB_NAME "AlgorighmsRNDAndTest")
+SET (COMMON_LIB_NAME "Common")
+SET (SERIAL_LIB_NAME "Serial")
+SET (CLIENT_LIB_NAME "Client")
+SET (DB_LIB_NAME "DB")
+SET (VIDEO_FINALIZER_PROJECT_EXE_NAME "VideoFinalizer")
+SET (NET_LIB_NAME "Network")
+SET (IMAGE_SERVER_LIB_NAME "ImageServers")
+SET (LOG_LIB_NAME "Log")
+SET (SMTP_LIB_NAME "SMTP")
+SET (ZIP_LIB_NAME "Zip")
+SET (MJPEG_SERVER_LIB_NAME "MJPEGLib")
+SET (ALERTS_LIB_NAME "Alerts")
+SET (WEB_DOWNLOADER_LIB_NAME "WebDownloader")
+SET (CONDITIONS_LIB_NAME "Conditions")
+SET (COMMAND_LIB_NAME "Commands")
+SET (TEXT_TO_SPEECH_LIB_NAME "SpeechToText")
+SET (HELLO_EXAMPLE_MAIN "speak_example")
+
+SET (TEXT_LIB_NAME "Text")
+SET (IMAGE_LIB_NAME "Image")
+
+SET (INSTALL_BIN_DIR "bin" )
+SET (INSTALL_LIB_DIR "lib" )
+SET (INSTALL_SRC_DIR "include" )
+
+SET ( GENERATED_FILES "${CMAKE_CURRENT_BINARY_DIR}/include/" )
+
+SET (CONFIG_FILE_PREPROCESSED "${GENERATED_FILES}/generated/config.xml")
+
+SET (RUN_LOOP_FILE  ${PROJECT_SOURCE_DIR}/run_loop.sh)
+
+####                            preprocess version file                                             ####
+STRING(TIMESTAMP PROJECT_BUILD_DATETIME  "%Y-%m-%d_%H-%M-%S" )
+INCLUDE_DIRECTORIES( ${GENERATED_FILES} )
+message( STATUS "version ${CMAKE_CXX_COMPILER_VERSION}")
+
+SET ( PROJECT_GIT_REVISION "0" )
+FIND_PACKAGE( Git )
+IF ( GIT_FOUND )
+    EXECUTE_PROCESS (
+        COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_HEAD
+#        ERROR_VARIABLE ERROR_RESULT
+#        RESULT_VARIABLE INFO_RESULT
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+
+    IF ( ${GIT_HEAD} MATCHES "^.+$" )
+        STRING ( SUBSTRING ${GIT_HEAD} 0 8 VERSION_REVISION )
+        SET ( PROJECT_GIT_REVISION ${VERSION_REVISION} )
+    ENDIF ( ${GIT_HEAD} MATCHES "^.+$" )
+
+    execute_process (
+        COMMAND ${GIT_EXECUTABLE} show -s --format=%ci
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        OUTPUT_VARIABLE PROJECT_LAST_COMMIT_DATETIME
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+ENDIF ( GIT_FOUND )
+
+CONFIGURE_FILE ( "${PROJECT_SOURCE_DIR}/version.hpp.in" "${GENERATED_FILES}/generated/version.hpp" )
+CONFIGURE_FILE ( "${PROJECT_SOURCE_DIR}/config.xml" "${CONFIG_FILE_PREPROCESSED}" )
+file(GLOB CONFIG_FILE   "${GENERATED_FILES}/generated/config.xml")
+
+#TODO: temp, write play sound in thread in CAlertNotification
+CONFIGURE_FILE ( "${PROJECT_SOURCE_DIR}/install/my__play_loop.sh" "${GENERATED_FILES}/generated/my__play_loop.sh" )
+####                           end preprocess version file                                          ####
+
+
+IF (UNIX)
+    #fix build for Orange Pi
+    list(APPEND CMAKE_MODULE_PATH "/usr/lib/x86_64-linux-gnu/cmake/Qt5/" )
+
+    SET (LIBRARY_TYPE "STATIC")
+#    SET (LIBRARY_TYPE "SHARED")
+    SET (HELP_LINK_LIBRARIES -lpthread -lm) #fix fail compile on cubietruck-plus
+    ADD_DEFINITIONS(-std=c++11 -Wall -Wunused -Wunreachable-code -fPIC)
+    IF (GDB_FLAG)
+        ADD_DEFINITIONS(-ggdb)
+    ENDIF (GDB_FLAG)
+ENDIF (UNIX)
+
+IF (WIN32)
+    #on windows project won't build with SHARED libs)
+    SET (LIBRARY_TYPE "STATIC")
+    ADD_DEFINITIONS(-DQ_COMPILER_INITIALIZER_LISTS)
+ENDIF (WIN32)
+add_definitions(-DCMAKE_ROOT_PATH="${PROJECT_SOURCE_DIR}")
+add_definitions(-DQT_MESSAGELOGCONTEXT)
+
+FIND_PACKAGE( OpenCV REQUIRED )
+FIND_PACKAGE (Qt5 COMPONENTS Core Network Qml REQUIRED)
+
+
+IF (BUILD_ZLIB)
+    add_definitions(-D__WITH_ZLIB__)
+ENDIF (BUILD_ZLIB)
+
+SET (INSTALL_FILES
+   "${GENERATED_FILES}/generated/my__play_loop.sh"
+   "${PROJECT_SOURCE_DIR}/install/alert.mp3"
+   "${PROJECT_SOURCE_DIR}/install/alert.wav"
+   "${PROJECT_SOURCE_DIR}/install/crash.mp3"
+   )
+
+LINK_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR} )
+SET (CMAKE_ROOT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}")
+
+INCLUDE_DIRECTORIES(.)
+INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS})
+
+
+IF (BUILD_SERIAL)
+    FIND_PACKAGE (Qt5 COMPONENTS SerialPort)
+    IF (${Qt5Core_FOUND})
+        add_definitions(-D__WITH_SERIAL__)
+        ADD_SUBDIRECTORY(serial)
+    ELSE (${Qt5Core_FOUND})
+        SET (BUILD_SERIAL OFF)
+    ENDIF (${Qt5Core_FOUND})
+ENDIF (BUILD_SERIAL)
+
+IF (BUILD_TEXT_TO_SPEACH)
+    FIND_PACKAGE (Qt5 COMPONENTS TextToSpeech)
+    IF (${Qt5TextToSpeech_FOUND})
+        ADD_SUBDIRECTORY(TextToSpeech)
+    ELSE (${Qt5TextToSpeech_FOUND})
+        MESSAGE(" Module Qt5TextToSpeech Not found")
+        SET (BUILD_TEXT_TO_SPEACH OFF)
+    ENDIF (${Qt5TextToSpeech_FOUND})
+ENDIF (BUILD_TEXT_TO_SPEACH)
+
+IF (BUILD_DB)
+    FIND_PACKAGE (Qt5 COMPONENTS Sql)
+    IF (${Qt5Sql_FOUND})
+        ADD_SUBDIRECTORY(db)
+    ELSE (${Qt5Sql_FOUND})
+        MESSAGE(" Module Qt5Sql Not found")
+        SET (BUILD_DB OFF)
+    ENDIF (${Qt5Sql_FOUND})
+ENDIF (BUILD_DB)
+
+IF (BUILD_MOTION_ALGO)
+     ADD_DEFINITIONS(-D__BUILD_MOTION_ALGO__)
+ENDIF (BUILD_MOTION_ALGO)
+
+IF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+    MESSAGE (FATAL_ERROR "Builds must be done \"out-of-source\".")
+ENDIF ()
+
+ADD_SUBDIRECTORY(alerts)
+ADD_SUBDIRECTORY(common)
+ADD_SUBDIRECTORY(Text)
+ADD_SUBDIRECTORY(Image)
+
+IF (BUILD_CLIENT OR BUILD_NET_SERVERS)
+    ADD_SUBDIRECTORY(Net)
+    IF (BUILD_NET_SERVERS)
+        ADD_SUBDIRECTORY(ImageServer)
+    ENDIF (BUILD_NET_SERVERS)
+    IF (BUILD_CLIENT)
+        ADD_SUBDIRECTORY(client)
+    ENDIF (BUILD_CLIENT)
+ENDIF ()
+
+#------------------------------------------------main-----------------------------------------------
+IF (BUILD_NET_SERVERS)
+    SET (BUILD_SERVERS ON)
+    SET (BUILD_WITH_CLIENT OFF)
+    SET (BUILD_VIDEOCAPTURE ON)
+    SET (MAIN_NAME "CameraAlerts_With_Servers_No_Clients")
+#    ADD_SUBDIRECTORY(main "CameraAlerts_With_Servers_No_Clients")
+
+    IF (BUILD_CLIENT)
+        SET (BUILD_SERVERS ON)
+        SET (BUILD_WITH_CLIENT ON)
+        SET (BUILD_VIDEOCAPTURE OFF)
+        SET (MAIN_NAME "Client_With_Servers")
+        ADD_SUBDIRECTORY(main "Client_With_Servers")
+
+        SET (BUILD_SERVERS ON)
+        SET (BUILD_WITH_CLIENT ON)
+        SET (BUILD_VIDEOCAPTURE ON)
+        SET (MAIN_NAME "CameraAlerts_With_Servers_Clients")
+        ADD_SUBDIRECTORY(main "CameraAlerts_With_Servers_Clients")
+    ENDIF (BUILD_CLIENT)
+ENDIF (BUILD_NET_SERVERS)
+
+IF (BUILD_CLIENT)
+    SET (BUILD_VIDEOCAPTURE ON)
+    SET (BUILD_SERVERS OFF)
+    SET (BUILD_WITH_CLIENT ON)
+    SET (MAIN_NAME "CameraAlerts_No_Servers_With_Clients")
+#    ADD_SUBDIRECTORY(main "CameraAlerts_No_Servers_With_Clients")
+
+    SET (BUILD_SERVERS OFF)
+    SET (BUILD_WITH_CLIENT ON)
+    SET (BUILD_VIDEOCAPTURE OFF)
+    SET (MAIN_NAME "Client_No_Servers")
+#    ADD_SUBDIRECTORY(main "Client_No_Servers")
+ENDIF (BUILD_CLIENT)
+
+SET (BUILD_VIDEOCAPTURE ON)
+SET (BUILD_WITH_CLIENT OFF)
+SET (MAIN_NAME "CameraAlerts_No_Servers_No_Clients_No_Threads")
+#ADD_SUBDIRECTORY(main "CameraAlerts_No_Servers_No_Clients_No_Threads")
+
+#--------------------------------------------end main-----------------------------------------------
+ADD_SUBDIRECTORY(logging)
+
+IF (BUILD_GUI)
+    ADD_SUBDIRECTORY(gui)
+ENDIF (BUILD_GUI)
+
+IF (BUILD_MJPEG)
+    ADD_SUBDIRECTORY(MJPEGServer)
+ENDIF (BUILD_MJPEG)
+
+IF (BUILD_TOOLS)
+    ADD_SUBDIRECTORY(Tools)
+ENDIF (BUILD_TOOLS)
+
+ADD_SUBDIRECTORY(webDownload)
+ADD_SUBDIRECTORY(conditions)
+ADD_SUBDIRECTORY(command)

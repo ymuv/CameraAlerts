@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+
+    <!--if mFile param set, use video from file, else - from camera-->
+    <AlgoConfing IsASync="1"/>
+
+    <!--must be before CameraInput, FileInput, NetInput-->
+    <BaseInput
+        ResizeScaleFactor="1"
+        AlgoCoenficient="1.0"
+        SleepTime="0.100"
+        BufferSize="10"
+        LongBufferSize="5"
+        LongBufferSkip="7"
+
+        ResizeScaleFactorForNet="2"
+    />
+
+    <CameraInput
+        CameraId="1"
+    />
+
+    <CameraInput
+        CameraId="0"
+        AlgoCoenficient="1.5"
+        AlgoCoenficient="1.5"
+    />
+
+    <FileInput1
+        File="http://127.0.0.1:8082"
+    />
+
+    <BaseAlert
+        ForceSendInterval="3600"
+
+        FirstTimeSkip="250"
+        MinIntervalRepeatSend="10"
+
+        ReplyDiffTime="1"
+        ReplyCount="4"
+    />
+
+    <Telegram
+        Token="BotToken"
+        VerifyUsers="123;456;789"
+        AlertUsers="123;456"
+        MinIntervalRepeatSend="5"
+        FirstTimeSkip="1"
+    />
+    <FinalVideo
+        VideoFps="10.0"
+        SaveFinalVideoPaths="/home/y/.cameraAlerts/new123/"
+        IsWriteMaskToFinalVideo="1"
+    />
+
+    <AlertSound
+        Sound="${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}/alert.wav"
+    />
+
+    <Serial
+           SerialPort="/dev/ttyUSB0"
+           BaudRate="9600"
+           BuffersIds="0;1"
+           AlertReplyCountCoef="3"
+           AlertMinIntervalRepeatSendCoef="0.3"
+    />
+
+    <SerialPattern
+        Pattern="PIR1;PIR2"
+        Treshhold="0"
+        IsReverse="1"
+        IsProcess="1"
+    />
+    <SerialPattern
+        Pattern="Temperature_home;Humidity_home;Temperature_batery"
+        IsProcess="0"
+        DiffNotSave="2"
+    />
+    <SerialPattern
+        Pattern="Knock1"
+        IsProcess="0"
+        Treshhold="1"
+    />
+
+
+    <!---
+    NetInput
+    Connection="typeProtocol://IP:PORT/bufferId@ImageType
+    ImageType can be
+        IMAGE_GRAY_RESIZED = 0,
+        IMAGE_GRAY_FULL = 1,
+        IMAGE_RGB_FULL = 2,
+        IMAGE_RGB_RESIZED = 3,
+
+        IMAGE_RGB_FULL_WITH_TEXT = 4,
+
+        IMAGE_GRAY_NET_RESIZE = 5,
+    -->
+
+<NetInput
+    SleepTime="0.4"
+    Connection="
+        TCP://127.0.0.1:8002/0@2;
+    "
+/>
+    <!--LastImagesCountToEmailEncrypted must be <= LastImagesCountToEmailInZip-->
+    <alert
+        TmpDir="/tmp/cameraAlert/"
+        ForceSendInterval="3600"
+        MinIntervalRepeatSend="10"
+
+        SendFrom="12"
+        SendTo="14"
+
+        ReplyDiffTime="1"
+        ReplyCount="4"
+
+        FirstTimeSkip="250"
+
+        SaveVideoPath="/home/y/.cameraAlerts/new/video/"
+        IsSaveMaskAndLastImageToVideoPath="1"
+        MaskCountToVideo="2"
+
+        LastImagesCountToEmailInZip="4"
+
+        LastImagesCountToEmailEncrypted="1"
+
+        IsWriteVideoToEmail="1"
+
+        IsProcessFirstAlertOnly="1"
+
+        ZipPassword="zip_example_pass"
+        RunExternalCommands="echo; ps -aux --sort '%mem' | tail -n3; echo ; echo ; ps -aux --sort '%cpu'  | tail -n3; df -h /home/"
+        RunExternalCommandsOnAlert="bash ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}/my__play_loop.sh "
+        VideoFps="5.0"
+        IsSendEncryptedInForce="1"
+
+        AlertSound="${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}/alert.wav"
+        IsSaveVideoAsync1="1"
+
+
+    />
+
+   <!--base setting. Every MoveDetect* setting ovveride parametr.-->
+    <moveDetectBase
+        AreaMinSize="1300"
+        AreaMaxSize="1000000000"
+        MinTrashHold="25"
+        IsUseErode="0"
+        IsUseDilate="1"
+        SkipFrames="1"
+        IsRun="1"
+        MinRectangeWidth="5"
+        MinRectangeHeight="24"
+
+        AdoptAreaSizeToFPSCoeficient="0"
+        FromWhichFPSAdoptArea="15"
+
+        AdoptTrashHoldToLightCoeficient="0"
+        MintLightFromWhichAdopt="100"
+
+        MorphologyExOpenSize="0"
+        MorphologyExOpenIteration="0"
+
+        MorphologyExCloseSize="0"
+        MorphologyExCloseIteration="0"
+    />
+    <PHash
+        SkipFrames="1"
+        IsRun="1"
+    />
+
+    <moveDetectBitwiseAnd
+        AreaMinSize="300"
+        MinTrashHold="17"
+    />
+
+
+<!--    TODO: 28 ->18-->
+    <moveDetectBitwiseAndIncreaseBrighnes
+        AreaMinSize="1500"
+        MinTrashHold="35"
+
+        SkipFrames="3"
+        GaussianBlurIndexBegin="3"
+        GaussianBlurIndexEnd="7"
+
+        IsUseErode="1"
+
+    />
+
+    <moveDetect
+        AreaMinSize="950"
+        MinTrashHold="32"
+    />
+
+   <moveDetectColor
+       AreaMinSize="850"
+       MinTrashHold="35"
+       SkipFrames="2"
+
+       MinRectangeHeight="20"
+
+       IsUseErode="1"
+   />
+
+    <movedetectBackgroundSubtractorTest
+        AreaMinSize="200"
+        MinTrashHold="22"
+
+        GaussianBlurIndexBegin="3"
+        GaussianBlurIndexEnd="7"
+
+        HistoryLength="4"
+    />
+
+    <movedetectBackgroundSubtractorTestColor
+        AreaMinSize="220"
+        MinTrashHold="25"
+        SkipFrames="3"
+        GaussianBlurIndexBegin="3"
+        GaussianBlurIndexEnd="7"
+
+        HistoryLength="4"
+    />  CascadesHaarMain="
+            haarcascade_mcs_upperbody.xml;
+            haarcascade_frontalface_alt.xml;
+            haarcascade_fullbody.xml;
+
+            haarcascade_profileface.xml;
+            haarcascade_frontalface_default.xml;
+            haarcascade_frontalface_alt_tree.xml;
+            haarcascade_frontalface_alt2.xml;
+            "
+        CascadesHaarOther="
+            haarcascade_mcs_upperbody.xml;
+
+            haarcascade_righteye_2splits.xml;
+            haarcascade_mcs_righteye.xml;
+            haarcascade_mcs_nose.xml;
+            haarcascade_mcs_lefteye.xml;
+            haarcascade_mcs_eyepair_small.xml;
+            haarcascade_mcs_eyepair_big.xml;
+            haarcascade_eye_tree_eyeglasses.xml;
+            haarcascade_eye.xml;
+            haarcascade_frontalface_alt.xml"
+
+        CascadeLBPPrefix="/usr/local/opencv_2/share/OpenCV/lbpcascades/"
+        CascadesLBPMain="
+            lbpcascade_frontalface.xml;
+            lbpcascade_profileface.xml"
+        CascadesLBPOther=""
+    />
+
+    <connection
+        TCPPort="9002"
+        UDPPort="9002"
+        JPEGQuality="55"
+
+        TimeOut="5"
+
+        IsCheckHash="1"
+    />
+
+    <MJPEGServer
+        Port="8082"
+        JPEGQuality="90"
+        RefreshTimeMS="250"
+        UserName="testUser"
+        Password="testPass"
+    />
+
+    <!---key and vector will be resized to KeySize, Key -> KeyKeyKey...--->
+    <secure
+        InitialVector="vector1"
+        Key="key1"
+        KeySize="1024"
+        Key2="key2"
+        Key2Size="1024"
+        Key3="Key3"
+        Key3Size="1024"
+
+        IsUseCryption="1"
+    />
+
+    <smtp
+        SMTPHost="smtp.mail.ru"
+        SMTPPort="587"
+
+        UserName="user@example.com"
+        UserPassword="password"
+
+
+        _SMTPHost="smtp.yandex.com"
+        _SMTPPort="587"
+
+
+
+        ReceiverEMail="user@example.com;user2@example.com"
+
+        SubjectPrefix="SubjectPrefix_"
+        ComputerName="y-c"
+    />
+
+    <logging
+        fileName=""
+        IsUseProfiler="0"
+    />
+
+    <debugImg
+        IsShowDebugImg="0"
+        IsShowAlgoImages="0"
+        IsShowAlgoMask="0"
+        IsWriteInfoToMask="1"
+
+    />
+    <!--if run with sudo make sure what don't ask pass      -->
+    <runExternalCommandsOnStart value="sudo modprobe video ; sudo modprobe uvcvideo ; rm /tmp/cameraAlert/* -rvf"/>
+</config>
