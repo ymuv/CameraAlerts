@@ -20,9 +20,8 @@
         CameraId="1"
     />
 
-    <CameraInput
+    <CameraInput_
         CameraId="0"
-        AlgoCoenficient="1.5"
         AlgoCoenficient="1.5"
     />
 
@@ -97,7 +96,7 @@
         IMAGE_GRAY_NET_RESIZE = 5,
     -->
 
-<NetInput
+<NetInput_
     SleepTime="0.4"
     Connection="
         TCP://127.0.0.1:8002/0@2;
@@ -141,7 +140,7 @@
 
     />
 
-   <!--base setting. Every MoveDetect* setting ovveride parametr.-->
+   <!--base setting. Every MoveDetect* setting ovveride parametr -->
     <moveDetectBase
         AreaMinSize="1300"
         AreaMaxSize="1000000000"
@@ -176,7 +175,7 @@
     />
 
 
-<!--    TODO: 28 ->18-->
+<!--    TODO: 28 - 18-->
     <moveDetectBitwiseAndIncreaseBrighnes
         AreaMinSize="1500"
         MinTrashHold="35"
@@ -266,11 +265,11 @@
         Port="8082"
         JPEGQuality="90"
         RefreshTimeMS="250"
-        UserName="testUser"
-        Password="testPass"
+        UserName_="testUser"
+        Password_="testPass"
     />
 
-    <!---key and vector will be resized to KeySize, Key -> KeyKeyKey...--->
+    <!-- key and vector will be resized to KeySize, Key -> KeyKeyKey...-->
     <secure
         InitialVector="vector1"
         Key="key1"

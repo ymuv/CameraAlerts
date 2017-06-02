@@ -1,13 +1,12 @@
 [submodule "tgbot-cpp"]
     path = alerts/tgbot-cpp
-    url = https://github.com/ymuv/tgbot-cpp.git #TODO:fix to origin then pull request merged
+    url = https://github.com/reo7sp/tgbot-cpp
 
 [submodule "SmtpClient-for-Qt"]
     path = alerts/smtp/SmtpClient-for-Qt
     url = https://github.com/ymuv/SmtpClient-for-Qt.git #TODO:fix to origin then pull request merged
 
-
 [submodule "dxmpp"]
     path = alerts/dxmpp
-    url = https://github.com/ymuv/dxmpp.git #TODO:fix to origin then pull request merged
+    url = https://github.com/ymuv/SmtpClient-for-Qt.git #TODO:fix to origin then pull request merged
 
